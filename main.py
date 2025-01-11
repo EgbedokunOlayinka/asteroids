@@ -40,18 +40,19 @@ def main():
         return
       
     #run update for classes in updatable group
-    for item in updatable:
-      item.update(dt)
+    for drawable_item in updatable:
+      drawable_item.update(dt)
 
-    #exit game when asteroid collides with player
-    for item in asteroids:
-      if item.collide(player):
+    for asteroid in asteroids:
+      #exit game when asteroid collides with player
+      if asteroid.collide(player):
         print("Game over!")
         sys.exit()
-      for shot_item in shots:
-        if item.collide(shot_item):
-          item.kill()
-          shot_item.kill()
+      for shot in shots:
+        #destroy asteroid and shot when they collide
+        if asteroid.collide(shot):
+          asteroid.kill()
+          shot.kill()
       
 
     black = (0,0,0)
