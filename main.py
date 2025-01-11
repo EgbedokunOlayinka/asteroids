@@ -48,6 +48,11 @@ def main():
       if item.collide(player):
         print("Game over!")
         sys.exit()
+      for shot_item in shots:
+        if item.collide(shot_item):
+          item.kill()
+          shot_item.kill()
+      
 
     black = (0,0,0)
     pygame.Surface.fill(screen, black)
