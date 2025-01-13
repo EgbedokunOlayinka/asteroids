@@ -5,6 +5,7 @@ from player import *
 from asteroid import *
 from asteroidfield import *
 from shot import *
+from score import *
 
 def main():
   pygame.init()
@@ -13,6 +14,7 @@ def main():
   print(f"Screen height: {SCREEN_HEIGHT}")
 
   screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+  font = pygame.font.Font(pygame.font.get_default_font(), 24)
   clock = pygame.time.Clock()
   dt = 0
 
@@ -20,16 +22,18 @@ def main():
   drawable = pygame.sprite.Group()
   asteroids = pygame.sprite.Group()
   shots = pygame.sprite.Group()
+  texts = pygame.sprite.Group()
 
   Player.containers = (updatable, drawable)
   Asteroid.containers = (asteroids, updatable, drawable)
   AsteroidField.containers = (updatable)
   Shot.containers = (shots, updatable, drawable)
+  Score.containers = (texts)
 
   x = SCREEN_WIDTH / 2
   y = SCREEN_HEIGHT / 2
   player = Player(x, y)
-
+  score = Score(0);
   asteroid_field = AsteroidField()
 
   #start game loop
@@ -40,8 +44,8 @@ def main():
         return
       
     #run update for classes in updatable group
-    for drawable_item in updatable:
-      drawable_item.update(dt)
+    for updatable_item in updatable:
+      updatable_item.update(dt)
 
     for asteroid in asteroids:
       #exit game when asteroid collides with player
@@ -50,17 +54,21 @@ def main():
         sys.exit()
       for shot in shots:
         #destroy asteroid and shot when they collide
-        if asteroid.collide(shot):
+        if shot.collide(asteroid):
           asteroid.split()
           shot.kill()
-      
+          score.increment()
 
     black = (0,0,0)
     pygame.Surface.fill(screen, black)
 
     #run draw for all classes in drawable group
-    for item in drawable:
-      item.draw(screen)
+    for drawable_item in drawable:
+      drawable_item.draw(screen)
+    
+    #run write for all classes in texts group
+    for text in texts:
+      text.write(screen, font)
 
     pygame.display.flip()
 
